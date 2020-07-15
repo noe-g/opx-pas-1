@@ -171,6 +171,7 @@ void dn_pald_cleanup_previous_running_thread(size_t thread_idx,
  ************************************************************************/
 void dn_pas_lock(void) {
 	std_mutex_lock(&pas_lock);
+
 }
 
 /************************************************************************
