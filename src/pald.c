@@ -47,43 +47,41 @@
 #include <stdbool.h>            /* bool, true, false */
 
 enum {
-    TERM_SIG = SIGTERM
+	TERM_SIG = SIGTERM
 };
 
-std_mutex_lock_create_static_init_fast(pas_lock);
+std_mutex_lock_create_static_init_fast( pas_lock);
 
 typedef struct pald_thread_functions {
-    const char  *name;
-    t_std_error (*main_thread)(void);
-    t_std_error (*main_thread_param)(void *arg);
+	const char *name;
+	t_std_error (*main_thread)(void);
+	t_std_error (*main_thread_param)(void *arg);
 } t_pald_thread_list;
 
-static t_pald_thread_list thread_main_functions [] = {
-    //pas main thread
-    { "pas_main_thread", dn_pas_main_thread, NULL },
+static t_pald_thread_list thread_main_functions[] = {
+//pas main thread
+		{ "pas_main_thread", dn_pas_main_thread, NULL },
 
-    //pas monitor main thread
-    { "pas_monitor_thread", dn_pas_monitor_thread, NULL },
+		//pas monitor main thread
+		{ "pas_monitor_thread", dn_pas_monitor_thread, NULL },
 
-    //pas remote poller thread
-    { "pas_remote_poller_thread", dn_pas_remote_poller_thread, NULL },
+		//pas remote poller thread
+		{ "pas_remote_poller_thread", dn_pas_remote_poller_thread, NULL },
 
-    //pas FUSE handler main thread
-    { "pas_fuse_handler_thread", NULL, dn_pas_fuse_handler_thread },
+		//pas FUSE handler main thread
+		{ "pas_fuse_handler_thread", NULL, dn_pas_fuse_handler_thread },
 
-    //pas job queue thread 
-    {"pas_queue_job_thread", pas_job_q_thread, NULL}
-};
+		//pas job queue thread
+		{ "pas_queue_job_thread", pas_job_q_thread, NULL } };
 
-
-static const size_t total_thread_num
-    = sizeof(thread_main_functions)/sizeof(*thread_main_functions);
+static const size_t total_thread_num = sizeof(thread_main_functions)
+		/ sizeof(*thread_main_functions);
 
 static cps_api_operation_handle_t cps_hdl;
 static char *progname, *config_filename, *fuse_mount_dir;
 static bool pas_status, diag_mode;
 static char PAS_CONFIG_FILENAME_DFLT[] = "/etc/opx/pas/config.xml";
-static char PAS_FUSE_MOUNT_DIR_DFLT[]  = "/mnt/fuse";
+static char PAS_FUSE_MOUNT_DIR_DFLT[] = "/mnt/fuse";
 volatile static bool shutdwn = false;
 
 /************************************************************************
@@ -98,10 +96,9 @@ volatile static bool shutdwn = false;
  * -------------
  *
  ************************************************************************/
-static void sigterm_hdlr(int signo)
-{
-    /* Avoid system calls at all cost */
-    shutdwn = true;
+static void sigterm_hdlr(int signo) {
+	/* Avoid system calls at all cost */
+	shutdwn = true;
 }
 
 /************************************************************************
@@ -116,30 +113,22 @@ static void sigterm_hdlr(int signo)
  * -------------
  *
  ************************************************************************/
-static bool dn_pald_status(bool status)
-{
-    cps_api_object_t obj;
-    uint_t           slot = 0;
+static bool dn_pald_status(bool status) {
+	cps_api_object_t obj;
+	uint_t slot = 0;
 
-    obj = cps_api_object_create();
-    if (obj == CPS_API_OBJECT_NULL) {
-        return false;
-    }
+	obj = cps_api_object_create();
+	if (obj == CPS_API_OBJECT_NULL) {
+		return false;
+	}
 
-    dn_pas_myslot_get(&slot);
+	dn_pas_myslot_get(&slot);
 
-    dn_pas_obj_key_pas_status_set(obj,
-                              cps_api_qualifier_OBSERVED,
-                              true,
-                              slot
-                             );
+	dn_pas_obj_key_pas_status_set(obj, cps_api_qualifier_OBSERVED, true, slot);
 
-    cps_api_object_attr_add_u8(obj,
-                               BASE_PAS_READY_STATUS,
-                               status
-                               );
+	cps_api_object_attr_add_u8(obj, BASE_PAS_READY_STATUS, status);
 
-    return (dn_pas_cps_notify(obj));
+	return (dn_pas_cps_notify(obj));
 }
 
 /************************************************************************
@@ -154,23 +143,18 @@ static bool dn_pald_status(bool status)
  * -------------
  *
  ************************************************************************/
-void dn_pald_cleanup_previous_running_thread(
-         size_t thread_idx,
-         std_thread_create_param_t *pas_thread_entry
-                                            )
-{
-    size_t running_thread_idx  = 0;
+void dn_pald_cleanup_previous_running_thread(size_t thread_idx,
+		std_thread_create_param_t *pas_thread_entry) {
+	size_t running_thread_idx = 0;
 
-    /* kill all previous running threads if have */
-    for (running_thread_idx=0;
-        running_thread_idx < thread_idx;
-        running_thread_idx++
-        ) {
-       pthread_kill(*(pthread_t *)pas_thread_entry[running_thread_idx].thread_id,
-                    TERM_SIG
-                    );
-       std_thread_destroy_struct(&pas_thread_entry[running_thread_idx]);
-    }
+	/* kill all previous running threads if have */
+	for (running_thread_idx = 0; running_thread_idx < thread_idx;
+			running_thread_idx++) {
+		pthread_kill(
+				*(pthread_t*) pas_thread_entry[running_thread_idx].thread_id,
+				TERM_SIG);
+		std_thread_destroy_struct(&pas_thread_entry[running_thread_idx]);
+	}
 }
 
 /************************************************************************
@@ -185,9 +169,8 @@ void dn_pald_cleanup_previous_running_thread(
  * -------------
  *
  ************************************************************************/
-void dn_pas_lock(void)
-{
-    std_mutex_lock(&pas_lock);
+void dn_pas_lock(void) {
+	std_mutex_lock(&pas_lock);
 }
 
 /************************************************************************
@@ -202,9 +185,8 @@ void dn_pas_lock(void)
  * -------------
  *
  ************************************************************************/
-void dn_pas_unlock(void)
-{
-    std_mutex_unlock(&pas_lock);
+void dn_pas_unlock(void) {
+	std_mutex_unlock(&pas_lock);
 }
 
 /*
@@ -217,20 +199,19 @@ void dn_pas_unlock(void)
  * Return Values: On success STD_ERR_OK, otherwise ERROR.
  */
 
-t_std_error dn_pas_timedlock(void)
-{
-    struct timespec timeout;
-    t_std_error     ret = STD_ERR_OK;
+t_std_error dn_pas_timedlock(void) {
+	struct timespec timeout;
+	t_std_error ret = STD_ERR_OK;
 
-    memset(&timeout, 0, sizeof(timeout));
-    clock_gettime(CLOCK_REALTIME, &timeout);
-    timeout.tv_sec += 30; // 30 seconds timeout
+	memset(&timeout, 0, sizeof(timeout));
+	clock_gettime(CLOCK_REALTIME, &timeout);
+	timeout.tv_sec += 30; // 30 seconds timeout
 
-    if (pthread_mutex_timedlock(&pas_lock, &timeout) != 0) {
-        ret = STD_ERR(PAS, FAIL, 0);
-    }
+	if (pthread_mutex_timedlock(&pas_lock, &timeout) != 0) {
+		ret = STD_ERR(PAS, FAIL, 0);
+	}
 
-    return ret;
+	return ret;
 }
 
 /************************************************************************
@@ -246,19 +227,64 @@ t_std_error dn_pas_timedlock(void)
  *
  ************************************************************************/
 
-static t_std_error dn_pas_config_file_handle(void)
-{
-    return (dn_pas_config_init(config_filename, cps_hdl)
-            && dn_cache_init_chassis()
-            && dn_cache_init_entity()
-            && dn_cache_init_psu()
-            && dn_cache_init_fan_tray()
-            && dn_cache_init_card()
-            && dn_pas_phy_media_init()
-            && dn_pas_comm_dev_init()
-            && dn_pas_cps_handler_reg(config_filename, cps_hdl)
-            ? STD_ERR_OK : STD_ERR(PAS, FAIL, 0)
-            );
+static t_std_error dn_pas_config_file_handle(void) {
+	printf("file_conf_name:%s\n", config_filename);
+	if (dn_pas_config_init(config_filename, cps_hdl)) {
+		printf("dn_pas_config_init-------------------OK\n");
+	} else {
+		printf("----------------------error_dnpas_config_init\n");
+	}
+
+	if (dn_cache_init_chassis()) {
+		printf("dn_cache_init_chassis_----------OK\n");
+	} else {
+		printf("-------------------error_dn_cache_init_chassis\n");
+	}
+
+	if (dn_cache_init_entity()) {
+		printf("init_entity_-------------OK\n");
+	} else {
+		printf("-----------------------error_dn_cache_init_entity\n");
+	}
+	if (dn_cache_init_psu()) {
+		printf("dn_cache_init_psu_--------OK\n");
+	} else {
+		printf("--------------------error_dn_cache_init_psu\n");
+	}
+	if (dn_cache_init_fan_tray()) {
+		printf("dn__cache_init_fan_tray---------------OKk\n");
+	} else {
+		printf("------------------------error_dn_cache_init_fan_tray\n");
+	}
+	if (dn_cache_init_card()) {
+
+		printf("dn_cache_init_card---------OK\n");
+	} else {
+		printf("---------------------error_dn_cache_init_card\n");
+	}
+	if (dn_pas_phy_media_init()) {
+		printf("dn_pas_phy_media_init--------OK\n");
+	} else {
+		printf("-------------------error_dn_pas_phy_media_init\n");
+	}
+	if (dn_pas_comm_dev_init()) {
+		printf("dn_pas_comm_dev_init-----------------------------OK\n");
+	} else {
+		printf("------------------------Error_dn_pas_common_dev_init\n");
+	}
+	if (dn_pas_cps_handler_reg(config_filename, cps_hdl)) {
+		printf("dn_pas_cps_handler_reg----------------------OK\n");
+	} else {
+		printf("---------------------error_dn_pas_cps_handler_reg\n");
+	}
+
+	return (dn_pas_config_init(config_filename, cps_hdl)
+			&& dn_cache_init_chassis() && dn_cache_init_entity()
+			&& dn_cache_init_psu() && dn_cache_init_fan_tray()
+			&& dn_cache_init_card() && dn_pas_phy_media_init()
+			&& dn_pas_comm_dev_init()
+			&& dn_pas_cps_handler_reg(config_filename, cps_hdl) ?
+			STD_ERR_OK : STD_ERR(PAS, FAIL, 0));
 }
 
 /******************************************************************************
@@ -273,58 +299,53 @@ static t_std_error dn_pas_config_file_handle(void)
  * -------------
  *
  *****************************************************************************/
-static t_std_error dn_pald_thread_init(void)
-{
-    size_t      thread_idx          = 0;
-    std_thread_create_param_t pas_thread_entry[total_thread_num];
+static t_std_error dn_pald_thread_init(void) {
+	size_t thread_idx = 0;
+	std_thread_create_param_t pas_thread_entry[total_thread_num];
 
-    for (; thread_idx < total_thread_num; thread_idx++) {
-      if (thread_main_functions[thread_idx].main_thread != NULL) {
+	for (; thread_idx < total_thread_num; thread_idx++) {
+		if (thread_main_functions[thread_idx].main_thread != NULL) {
 
-          std_thread_init_struct(&pas_thread_entry[thread_idx]);
-          pas_thread_entry[thread_idx].name
-              = thread_main_functions[thread_idx].name;
-          pas_thread_entry[thread_idx].thread_function =
-              (std_thread_function_t)
-                  thread_main_functions[thread_idx].main_thread;
-          pas_thread_entry[thread_idx].param = 0;
+			std_thread_init_struct(&pas_thread_entry[thread_idx]);
+			pas_thread_entry[thread_idx].name =
+					thread_main_functions[thread_idx].name;
+			pas_thread_entry[thread_idx].thread_function =
+					(std_thread_function_t) thread_main_functions[thread_idx].main_thread;
+			pas_thread_entry[thread_idx].param = 0;
 
-          if (std_thread_create(&pas_thread_entry[thread_idx])!=STD_ERR_OK) {
-              PAS_ERR("Failed to create thread %s",
-                      pas_thread_entry[thread_idx].name
-                      );
+			if (std_thread_create(&pas_thread_entry[thread_idx])
+					!= STD_ERR_OK) {
+				PAS_ERR("Failed to create thread %s",
+						pas_thread_entry[thread_idx].name);
 
-              dn_pald_cleanup_previous_running_thread(thread_idx,
-                                                      pas_thread_entry
-                                                      );
-              return STD_ERR(PAS,FAIL,0);
-          }
-      }
+				dn_pald_cleanup_previous_running_thread(thread_idx,
+						pas_thread_entry);
+				return STD_ERR(PAS, FAIL, 0);
+			}
+		}
 
-      if (thread_main_functions[thread_idx].main_thread_param != NULL) {
+		if (thread_main_functions[thread_idx].main_thread_param != NULL) {
 
-          std_thread_init_struct(&pas_thread_entry[thread_idx]);
-          pas_thread_entry[thread_idx].name
-              = thread_main_functions[thread_idx].name;
-          pas_thread_entry[thread_idx].thread_function =
-              (std_thread_function_t)
-                  thread_main_functions[thread_idx].main_thread_param;
+			std_thread_init_struct(&pas_thread_entry[thread_idx]);
+			pas_thread_entry[thread_idx].name =
+					thread_main_functions[thread_idx].name;
+			pas_thread_entry[thread_idx].thread_function =
+					(std_thread_function_t) thread_main_functions[thread_idx].main_thread_param;
 
-          pas_thread_entry[thread_idx].param = 0;
+			pas_thread_entry[thread_idx].param = 0;
 
-          if (std_thread_create(&pas_thread_entry[thread_idx])!=STD_ERR_OK) {
-              PAS_ERR("Failed to create thread %s",
-                      pas_thread_entry[thread_idx].name
-                      );
+			if (std_thread_create(&pas_thread_entry[thread_idx])
+					!= STD_ERR_OK) {
+				PAS_ERR("Failed to create thread %s",
+						pas_thread_entry[thread_idx].name);
 
-              dn_pald_cleanup_previous_running_thread(thread_idx,
-                                                      pas_thread_entry
-                                                      );
-              return STD_ERR(PAS,FAIL,0);
-          }
-      }
-    }
-    return STD_ERR_OK;
+				dn_pald_cleanup_previous_running_thread(thread_idx,
+						pas_thread_entry);
+				return STD_ERR(PAS, FAIL, 0);
+			}
+		}
+	}
+	return STD_ERR_OK;
 }
 
 /****************************************************************
@@ -340,142 +361,136 @@ static t_std_error dn_pald_thread_init(void)
  *
  ***************************************************************/
 
-bool dn_pald_status_get(void)
-{
-    return pas_status;
+bool dn_pald_status_get(void) {
+	return pas_status;
 }
 
-bool dn_pald_diag_mode_get(void)
-{
-    return diag_mode;
+bool dn_pald_diag_mode_get(void) {
+	return diag_mode;
 }
 
-void dn_pald_diag_mode_set(bool state)
-{
-    diag_mode = state;
+void dn_pald_diag_mode_set(bool state) {
+	diag_mode = state;
 }
 
-char *dn_pald_progname_get(void)
-{
-    return (progname);
+char* dn_pald_progname_get(void) {
+	return (progname);
 }
 
-char *dn_pald_fuse_mount_dir_get(void)
-{
-    return (fuse_mount_dir);
+char* dn_pald_fuse_mount_dir_get(void) {
+	return (fuse_mount_dir);
 }
 
+static t_std_error dn_pald_init(int argc, char *argv[]) {
+	t_std_error ret = STD_ERR_OK;
 
-static t_std_error dn_pald_init(int argc, char *argv[])
-{
-    t_std_error ret = STD_ERR_OK;
+	/* Parse and store command line args */
 
-    /* Parse and store command line args */
+	progname = argv[0];
+	config_filename = PAS_CONFIG_FILENAME_DFLT;
+	fuse_mount_dir = PAS_FUSE_MOUNT_DIR_DFLT;
 
-    progname        = argv[0];
-    config_filename = PAS_CONFIG_FILENAME_DFLT;
-    fuse_mount_dir  = PAS_FUSE_MOUNT_DIR_DFLT;
+	for (++argv, --argc; argc > 0;) {
+		if (strcmp(*argv, "-f") == 0) {
+			if (argc < 2)
+				break;
 
-    for (++argv, --argc; argc > 0; ) {
-        if (strcmp(*argv, "-f") == 0) {
-            if (argc < 2)  break;
+			config_filename = argv[1];
 
-            config_filename = argv[1];
+			argc -= 2;
+			argv += 2;
 
-            argc -= 2;  argv += 2;
+			continue;
+		}
+		if (strcmp(*argv, "-m") == 0) {
+			if (argc < 2)
+				break;
 
-            continue;
-        }
-        if (strcmp(*argv, "-m") == 0) {
-            if (argc < 2)  break;
+			fuse_mount_dir = argv[1];
 
-            fuse_mount_dir = argv[1];
+			argc -= 2;
+			argv += 2;
 
-            argc -= 2;  argv += 2;
+			continue;
+		}
 
-            continue;
-        }
+		break;
+	}
+	if (argc > 0) {
+		fprintf(stderr,
+				"usage: %s [ -f <config-filename> ] [ -m <fuse-mount-dir> ]\n",
+				progname);
 
-        break;
-    }
-    if (argc > 0) {
-        fprintf(stderr,
-                "usage: %s [ -f <config-filename> ] [ -m <fuse-mount-dir> ]\n",
-                progname
-                );
+		exit(1);
+	}
 
-        exit(1);
-    }
+	uint_t sdi_init_try_count = 0;
+	const uint_t sdi_init_max_try = 5;
+	const uint_t sdi_init_pause_time = 500000;
 
-    uint_t       sdi_init_try_count  = 0;
-    const uint_t sdi_init_max_try    = 5;
-    const uint_t sdi_init_pause_time = 500000;
+	while (sdi_sys_init() != STD_ERR_OK && sdi_init_try_count < sdi_init_max_try) {
+		usleep(sdi_init_pause_time);
+		++sdi_init_try_count;
+	}
 
-    while (sdi_sys_init() != STD_ERR_OK && sdi_init_try_count < sdi_init_max_try)
-    {
-        usleep(sdi_init_pause_time);
-        ++sdi_init_try_count;
-    }
+	if (sdi_init_try_count >= sdi_init_max_try) {
+		PAS_ERR("Failed to initialize SDI");
 
-    if(sdi_init_try_count >= sdi_init_max_try) {
-        PAS_ERR("Failed to initialize SDI");
+		return STD_ERR(PAS, FAIL, 0);
+	}
 
-        return STD_ERR(PAS, FAIL, 0);
-    }
+	if (cps_api_operation_subsystem_init(&cps_hdl, 1) != cps_api_ret_code_OK) {
+		PAS_ERR("Failed to initalize CPS API");
 
-    if (cps_api_operation_subsystem_init(&cps_hdl, 1)!= cps_api_ret_code_OK) {
-        PAS_ERR("Failed to initalize CPS API");
+		return STD_ERR(PAS, FAIL, 0);
+	}
 
-        return STD_ERR(PAS, FAIL, 0);
-    }
+	do {
+		/* Initialize event subsystem */
 
-    do {
-       /* Initialize event subsystem */
+		if (!dn_pas_cps_ev_init()) {
+			ret = STD_ERR(PAS, FAIL, 0);
+			break;
+		}
 
-       if (! dn_pas_cps_ev_init()) {
-          ret = STD_ERR(PAS,FAIL,0);
-          break;
-       }
+		// read pas config file and put read data into internal data structure
+		ret = dn_pas_config_file_handle();
+		if (STD_IS_ERR(ret)) {
+			printf("failed to parse config file\n");
+			PAS_ERR("Failed to parse config file");
 
+			break;
+		}
 
-       // read pas config file and put read data into internal data structure
-       ret = dn_pas_config_file_handle();
-       if (STD_IS_ERR(ret)) {
-           PAS_ERR("Failed to parse config file");
+		std_mutex_lock_init_recursive(&pas_lock);
 
-           break;
-       }
+		/* init threads */
+		ret = dn_pald_thread_init();
+		if (STD_IS_ERR(ret)) {
+			PAS_ERR("Failed to initialize threads");
 
-       std_mutex_lock_init_recursive(&pas_lock);
+			std_mutex_destroy(&pas_lock);
+			break;
+		}
+	} while (0);
 
-       /* init threads */
-       ret = dn_pald_thread_init();
-       if (STD_IS_ERR(ret)) {
-           PAS_ERR("Failed to initialize threads");
+	if (STD_IS_ERR(ret)) {
+		return ret;
+	}
 
-            std_mutex_destroy(&pas_lock);
-            break;
-       }
-    } while (0);
-
-    if (STD_IS_ERR(ret)) {
-       return ret;
-    }
-
-    return STD_ERR_OK;
+	return STD_ERR_OK;
 }
 
-t_std_error dn_pald_reinit()
-{
-    /** TODO */
+t_std_error dn_pald_reinit() {
+	/** TODO */
 
-    /** Delete all the data from the internal datastore */
+	/** Delete all the data from the internal datastore */
 
-    /** Sdi initialization */
+	/** Sdi initialization */
 
-    /** Re-create a datastore for PAS */
+	/** Re-create a datastore for PAS */
 
-    return STD_ERR_OK;
+	return STD_ERR_OK;
 }
 
 /*******************************************************************************
@@ -490,32 +505,30 @@ t_std_error dn_pald_reinit()
  * -------------
  *
  *******************************************************************************/
-t_std_error main(int argc, char *argv[])
-{
-    PAS_NOTICE("Starting");
-    dn_pas_debug_log("PAS_DAEMON", "PAS starting");
+t_std_error main(int argc, char *argv[]) {
+	PAS_NOTICE("Starting");
+	dn_pas_debug_log("PAS_DAEMON", "PAS starting");
 
-    // signal must install before service init
-    (void)signal(SIGTERM, sigterm_hdlr);
+	// signal must install before service init
+	(void) signal(SIGTERM, sigterm_hdlr);
 
-    if (dn_pald_init(argc, argv) != STD_ERR_OK) {
-        return STD_ERR(PAS,FAIL,0);
-    }
+	if (dn_pald_init(argc, argv) != STD_ERR_OK) {
+		return STD_ERR(PAS, FAIL, 0);
+	}
 
-    sd_notify(0,"READY=1");
-    dn_pas_status_init(cps_hdl);
-    pas_status = true;
-    dn_pald_status(pas_status);
+	sd_notify(0, "READY=1");
+	dn_pas_status_init(cps_hdl);
+	pas_status = true;
+	dn_pald_status(pas_status);
 
-    while(!shutdwn)
-    {
-        pause();
-    }
+	while (!shutdwn) {
+		pause();
+	}
 
-    /* Let systemd know we got the shutdwn request
-     * and that we're in the process of shutting down */
-    sd_notify(0, "STOPPING=1");
+	/* Let systemd know we got the shutdwn request
+	 * and that we're in the process of shutting down */
+	sd_notify(0, "STOPPING=1");
 
-    PAS_NOTICE("Exiting");
-    exit(EXIT_SUCCESS);
+	PAS_NOTICE("Exiting");
+	exit(EXIT_SUCCESS);
 }
