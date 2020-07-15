@@ -656,6 +656,8 @@ static void dn_pas_media_resource_cb (sdi_resource_hdl_t hdl, void *user_data)
 
 bool dn_pas_phy_media_init (void)
 {
+
+	printf("pas_media_init:START\n");
     bool                    ret = true;
     struct pas_config_media *cfg = dn_pas_config_media_get();
     sdi_entity_hdl_t        entity_hdl;
@@ -680,6 +682,7 @@ bool dn_pas_phy_media_init (void)
 
     ret = dn_media_data_store_init(phy_media_count);
 
+    printf("pas_media_init:END\n");
     return ret;
 }
 
