@@ -673,7 +673,6 @@ bool dn_pas_phy_media_init (void)
 
     /* SYSTEM_BOARD_SLOT_NUMBER is hardcoded for now*/
     entity_hdl = sdi_entity_lookup(SDI_ENTITY_SYSTEM_BOARD, SYSTEM_BOARD_SLOT_NUMBER );
-
     STD_ASSERT(entity_hdl != NULL);
 
     /* Get the media resource handles*/
@@ -791,6 +790,7 @@ static bool dn_media_data_store_init (uint_t count)
             /* The first speed obtained is the port speed */
             if (pas_sdi_media_speed_get(phy_media_tbl[cnt].res_hdl, &speed)
                     != STD_ERR_OK) {
+            	printf("Failed to get port speed, port %u\n", cnt);
                 PAS_ERR("Failed to get port speed, port %u", cnt);
                 return false;
             }
