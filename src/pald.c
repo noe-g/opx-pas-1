@@ -234,7 +234,7 @@ static t_std_error dn_pas_config_file_handle(void) {
 		printf("dn_pas_config_init-------------------OK\n");
 	} else {
 		printf("----------------------error_dnpas_config_init\n");
-		return ;
+		return STD_ERR(PAS, FAIL, 0);
 	}
 
 	if (dn_cache_init_chassis()) {
@@ -284,8 +284,9 @@ static t_std_error dn_pas_config_file_handle(void) {
 	if (dn_pas_cps_handler_reg(config_filename, cps_hdl)) {
 		printf("dn_pas_cps_handler_reg----------------------OK\n");
 	} else {
-		return STD_ERR(PAS, FAIL, 0);
+
 		printf("---------------------error_dn_pas_cps_handler_reg\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 
 	return STD_ERR_OK;
