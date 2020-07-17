@@ -234,50 +234,61 @@ static t_std_error dn_pas_config_file_handle(void) {
 		printf("dn_pas_config_init-------------------OK\n");
 	} else {
 		printf("----------------------error_dnpas_config_init\n");
+		return ;
 	}
 
 	if (dn_cache_init_chassis()) {
 		printf("dn_cache_init_chassis_----------OK\n");
 	} else {
 		printf("-------------------error_dn_cache_init_chassis\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 
 	if (dn_cache_init_entity()) {
 		printf("init_entity_-------------OK\n");
 	} else {
 		printf("-----------------------error_dn_cache_init_entity\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_psu()) {
 		printf("dn_cache_init_psu_--------OK\n");
 	} else {
 		printf("--------------------error_dn_cache_init_psu\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_fan_tray()) {
 		printf("dn__cache_init_fan_tray---------------OKk\n");
 	} else {
 		printf("------------------------error_dn_cache_init_fan_tray\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_card()) {
 
 		printf("dn_cache_init_card---------OK\n");
 	} else {
 		printf("---------------------error_dn_cache_init_card\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_phy_media_init()) {
 		printf("dn_pas_phy_media_init--------OK\n");
 	} else {
 		printf("-------------------error_dn_pas_phy_media_init\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_comm_dev_init()) {
 		printf("dn_pas_comm_dev_init-----------------------------OK\n");
 	} else {
 		printf("------------------------Error_dn_pas_common_dev_init\n");
+		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_cps_handler_reg(config_filename, cps_hdl)) {
 		printf("dn_pas_cps_handler_reg----------------------OK\n");
 	} else {
+		return STD_ERR(PAS, FAIL, 0);
 		printf("---------------------error_dn_pas_cps_handler_reg\n");
 	}
+
+	return STD_ERR_OK;
 
 	return (dn_pas_config_init(config_filename, cps_hdl)
 			&& dn_cache_init_chassis() && dn_cache_init_entity()
