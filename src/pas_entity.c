@@ -151,6 +151,7 @@ bool dn_cache_init_entity(void)
                                  slot
                                                );
             if (sdi_entity_hdl == 0) {
+            	printf("return false\n");
                 return (false);
             }
 
