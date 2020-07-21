@@ -140,10 +140,10 @@ bool dn_cache_init_entity(void)
     for (i = 0; i < ARRAY_SIZE(entity_type_tbl); ++i) {
         for (slot = 1,
                  n = sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type);
-        		printf("entity count:%d\n");
              n;
              --n, ++slot
              ) {
+
             sdi_entity_hdl = sdi_entity_lookup(
                                  entity_type_tbl[i].sdi_entity_type,
                                  slot
@@ -177,6 +177,7 @@ bool dn_cache_init_entity(void)
                                     rec
                                     )
                 ) {
+            	printf("reskey : %s",res_key);
                 free(rec);
 
                 return (false);
