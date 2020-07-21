@@ -182,8 +182,10 @@ bool dn_cache_init_entity(void)
 
                 return (false);
             }
+            printf("reskey : %s",res_key);
         }
     }
+
 
     return (true);
 }
