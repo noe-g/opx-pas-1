@@ -187,7 +187,7 @@ bool dn_cache_init_entity(void)
         }
     }
 
-
+    printf("true\n");
     return (true);
 }
 
