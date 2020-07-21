@@ -137,8 +137,9 @@ bool dn_cache_init_entity(void)
     sdi_entity_hdl_t   sdi_entity_hdl;
     pas_entity_t       *rec;
 
+
     for (i = 0; i < ARRAY_SIZE(entity_type_tbl); ++i) {
-    	 printf("entity_count_get : %x\n",sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type));
+
 
         for (slot = 1,
                  n = sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type);
@@ -151,7 +152,7 @@ bool dn_cache_init_entity(void)
                                  slot
                                                );
             if (sdi_entity_hdl == 0) {
-            	printf("return false\n");
+
                 return (false);
             }
 
@@ -180,17 +181,16 @@ bool dn_cache_init_entity(void)
                                     rec
                                     )
                 ) {
-            	printf("reskey : %s\n",res_key);
-            	printf("false\n");
+
                 free(rec);
 
                 return (false);
             }
-            printf("reskey : %s\n",res_key);
+
         }
     }
 
-    printf("true\n");
+
     return (true);
 }
 
