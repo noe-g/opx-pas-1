@@ -178,6 +178,7 @@ bool dn_cache_init_entity(void)
                                     )
                 ) {
             	printf("reskey : %s\n",res_key);
+            	printf("false\n");
                 free(rec);
 
                 return (false);
