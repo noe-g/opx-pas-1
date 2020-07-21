@@ -138,7 +138,7 @@ bool dn_cache_init_entity(void)
     pas_entity_t       *rec;
 
     for (i = 0; i < ARRAY_SIZE(entity_type_tbl); ++i) {
-    	 printf("entity_count_get : %x",sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type));
+    	 printf("entity_count_get : %x\n",sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type));
 
         for (slot = 1,
                  n = sdi_entity_count_get(entity_type_tbl[i].sdi_entity_type);
