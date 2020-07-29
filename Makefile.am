@@ -18,7 +18,7 @@ ACLOCAL_AMFLAGS=-I m4
 
 SUBDIRS = inc
 
-COMMON_HARDEN_FLAGS=-fexceptions -fstack-protector-strong -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wall -Wformat -Wformat-security -Werror
+COMMON_HARDEN_FLAGS=-fexceptions -fstack-protector-strong -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wall -Wformat -Wformat-security -Werror -g
 C_HARDEN_FLAGS=-Wimplicit-function-declaration
 LD_HARDEN_FLAGS=-Wl,-z,defs -Wl,-z,now -Wl,-z,relo
 
