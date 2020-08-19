@@ -257,7 +257,7 @@ static t_std_error dn_pas_config_file_handle(void) {
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_fan_tray()) {
-		printf("dn__cache_init_fan_tray---------------OKk\n");
+		printf("dn__cache_init_fan_tray---------------OK\n");
 	} else {
 		printf("------------------------error_dn_cache_init_fan_tray\n");
 		return STD_ERR(PAS, FAIL, 0);
