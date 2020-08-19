@@ -152,18 +152,21 @@ bool dn_cache_init_entity(void)
                                  slot
                                                );
             if (sdi_entity_hdl == 0) {
-
+            	printf("entity hdl = 0\n");
                 return (false);
             }
 
             rec = CALLOC_T(pas_entity_t, 1);
             if (rec == 0) {
+            	printf("rec = 0\n");
                 return (false);
             }
 
             rec->entity_type         = entity_type_tbl[i].entity_type;
             rec->slot                = slot;
             rec->sdi_entity_hdl      = sdi_entity_hdl;
+
+
 
             rec->admin_status = BASE_CMN_ADMIN_STATUS_TYPE_UP;
 
@@ -181,7 +184,7 @@ bool dn_cache_init_entity(void)
                                     rec
                                     )
                 ) {
-
+            	printf("res_key : %s \n",res_key);
                 free(rec);
 
                 return (false);
