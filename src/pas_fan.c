@@ -152,6 +152,9 @@ bool dn_fan_poll(
     *prev_oper_fault_state = *rec->oper_fault_state;
     dn_pas_oper_fault_state_init(rec->oper_fault_state);
 
+
+    printf("///////////dn_fan_poll\n\n\n");
+
     if (!rec->valid || update_allf) {
         if (STD_IS_ERR(sdi_entity_info_read(parent->sdi_entity_info_hdl,
                                             entity_info
