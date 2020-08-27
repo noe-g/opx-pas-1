@@ -96,6 +96,8 @@ static t_std_error dn_pas_fan_get1(
         dn_entity_poll(rec->parent, true);
     }
 
+    printf("max_speed = %d\n",rec->max_speed);
+
     if (rec->parent && rec->parent->present) {
         /* Add result attributes to response object */
 
