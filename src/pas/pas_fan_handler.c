@@ -168,6 +168,7 @@ t_std_error dn_pas_fan_get(cps_api_get_params_t * param, size_t key_idx)
     uint_t                   entity_type, i, slot, slot_idx, slot_start, slot_limit;
     uint_t                   fan_idx, idx, fan_idx_start, fan_idx_limit;
     struct pas_config_entity *e;
+    printf("coucou\n");
 
     dn_pas_obj_key_fan_get(req_obj,
                            &qual,
