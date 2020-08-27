@@ -244,7 +244,6 @@ bool dn_fan_poll(
         if (!rec->speed_control_en)  break;
 
         drift = (100 * abs(((int) rec->obs_speed - (int) targ_speed))) / targ_speed;
-        printf("---------------------------------------------------------\n");
         if ((rec->obs_speed < targ_speed && drift >= rec->speed_err_margin) ||
             (rec->obs_speed > targ_speed &&
             drift >= (rec->speed_err_margin + PAS_FAN_ALLWED_ERR_MARGIN_BUF))) {

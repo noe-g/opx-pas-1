@@ -33,6 +33,7 @@ int dn_pas_fuse_fan_read(
         off_t      offset
         )
 {
+	printf("coucou\n");
     int    res                               = -ENOTSUP;
     size_t len                               = 0;
     char   trans_buf[FUSE_FILE_DEFAULT_SIZE] = { 0 };
