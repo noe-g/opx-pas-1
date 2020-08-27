@@ -173,7 +173,7 @@ bool dn_fan_poll(
         }
 
         rec->max_speed = entity_info->max_speed;
-
+        printf("max speed = %d \n",rec->max_speed);
         rec->valid = true;
     }
 
