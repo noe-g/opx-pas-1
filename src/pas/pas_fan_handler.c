@@ -48,6 +48,7 @@ static t_std_error dn_pas_fan_get1(
     uint_t               fan_idx
                                    )
 {
+	printf("coucou\n");
     pas_fan_t        *rec;
     cps_api_object_t resp_obj;
 
@@ -95,8 +96,6 @@ static t_std_error dn_pas_fan_get1(
 
         dn_entity_poll(rec->parent, true);
     }
-
-    printf("max_speed = %d\n",rec->max_speed);
 
     if (rec->parent && rec->parent->present) {
         /* Add result attributes to response object */
