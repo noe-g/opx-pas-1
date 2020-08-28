@@ -238,20 +238,20 @@ static t_std_error dn_pas_config_file_handle(void) {
 	}
 
 	if (dn_cache_init_chassis()) {
-		printf("dn_cache_init_chassis_----------OK\n");
+		printf("dn_cache_init_chassis_-----------OK\n");
 	} else {
 		printf("-------------------error_dn_cache_init_chassis\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 
 	if (dn_cache_init_entity()) {
-		printf("dn_cache_init_entity------------OK\n");
+		printf("dn_cache_init_entity-------------OK\n");
 	} else {
 		printf("---------------------error_dn_cache_init_entity\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_psu()) {
-		printf("dn_cache_init_psu---------------OK\n");
+		printf("dn_cache_init_psu----------------OK\n");
 	} else {
 		printf("------------------------error_dn_cache_init_psu\n");
 		return STD_ERR(PAS, FAIL, 0);
@@ -282,7 +282,7 @@ static t_std_error dn_pas_config_file_handle(void) {
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_cps_handler_reg(config_filename, cps_hdl)) {
-		printf("dn_pas_cps_handler_reg----------OK\n");
+		printf("dn_pas_cps_handler_reg-----------OK\n");
 	} else {
 
 		printf("-------------------error_dn_pas_cps_handler_reg\n");
