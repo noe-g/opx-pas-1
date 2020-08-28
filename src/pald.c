@@ -231,7 +231,7 @@ t_std_error dn_pas_timedlock(void) {
 static t_std_error dn_pas_config_file_handle(void) {
 	printf("file_conf_name:%s\n", config_filename);
 	if (dn_pas_config_init(config_filename, cps_hdl)) {
-		printf("dn_pas_config_init-------------------OK\n");
+		printf("dn_pas_config_init---------------OK\n");
 	} else {
 		printf("----------------------error_dnpas_config_init\n");
 		return STD_ERR(PAS, FAIL, 0);
@@ -245,47 +245,47 @@ static t_std_error dn_pas_config_file_handle(void) {
 	}
 
 	if (dn_cache_init_entity()) {
-		printf("init_entity_-------------OK\n");
+		printf("dn_cache_init_entity------------OK\n");
 	} else {
-		printf("-----------------------error_dn_cache_init_entity\n");
+		printf("---------------------error_dn_cache_init_entity\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_psu()) {
-		printf("dn_cache_init_psu_--------OK\n");
+		printf("dn_cache_init_psu---------------OK\n");
 	} else {
-		printf("--------------------error_dn_cache_init_psu\n");
+		printf("------------------------error_dn_cache_init_psu\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_fan_tray()) {
-		printf("dn__cache_init_fan_tray---------------OK\n");
+		printf("dn_cache_init_fan_tray-----------OK\n");
 	} else {
-		printf("------------------------error_dn_cache_init_fan_tray\n");
+		printf("-------------------error_dn_cache_init_fan_tray\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_cache_init_card()) {
 
-		printf("dn_cache_init_card---------OK\n");
+		printf("dn_cache_init_card---------------OK\n");
 	} else {
-		printf("---------------------error_dn_cache_init_card\n");
+		printf("-----------------------error_dn_cache_init_card\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_phy_media_init()) {
-		printf("dn_pas_phy_media_init--------OK\n");
+		printf("dn_pas_phy_media_init------------OK\n");
 	} else {
-		printf("-------------------error_dn_pas_phy_media_init\n");
+		printf("--------------------error_dn_pas_phy_media_init\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_comm_dev_init()) {
-		printf("dn_pas_comm_dev_init-----------------------------OK\n");
+		printf("dn_pas_comm_dev_init-------------OK\n");
 	} else {
-		printf("------------------------Error_dn_pas_common_dev_init\n");
+		printf("-------------------Error_dn_pas_common_dev_init\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 	if (dn_pas_cps_handler_reg(config_filename, cps_hdl)) {
-		printf("dn_pas_cps_handler_reg----------------------OK\n");
+		printf("dn_pas_cps_handler_reg----------OK\n");
 	} else {
 
-		printf("---------------------error_dn_pas_cps_handler_reg\n");
+		printf("-------------------error_dn_pas_cps_handler_reg\n");
 		return STD_ERR(PAS, FAIL, 0);
 	}
 
